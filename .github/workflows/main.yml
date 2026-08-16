@@ -1,0 +1,7 @@
+- name: ChatGPT Typescript Integration
+  # You may pin to the exact commit or the version.
+  # uses: mvtavares/chatgpt-ts-action@b7a6fdbf222bb39e66c3e75374e324352bed749d
+  uses: mvtavares/chatgpt-ts-action@v1
+  with:
+    # Mode
+    mode: # default is pr
