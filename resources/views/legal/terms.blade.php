@@ -1,0 +1,1 @@
+@extends('layouts.app') @section('title','Terms of Use') @section('content')<section class="legal"><h1>Terms of Use & Digital Licence</h1><p>Digital products are licensed to the buyer for personal or internal business use. Resale, redistribution and sharing of source files are prohibited unless a separate licence states otherwise.</p></section>@endsection

@@ -1,0 +1,1 @@
+@extends('layouts.app') @section('title','Privacy Policy') @section('content')<section class="legal"><h1>Privacy Policy</h1><p>GAYA BORNEO ENTERPRISE processes customer details only for orders, payment, support and lawful business records. Contact admin@gayabmarketing.com for privacy requests.</p></section>@endsection
