@@ -5,6 +5,13 @@ return [
         'dashboard' => 'Dashboard',
         'products' => 'Products',
         'categories' => 'Categories',
+        'orders' => 'Orders',
+    ],
+
+    'orders' => [
+        'title' => 'Orders',
+        'items' => 'items',
+        'empty' => 'No orders yet.',
     ],
 
     'dashboard' => [
@@ -35,6 +42,11 @@ return [
         'empty' => 'No products yet.',
         'saved' => 'Product saved.',
         'deleted' => 'Product deleted.',
+        'files' => 'Downloadable files',
+        'file_version' => 'Version label',
+        'upload_file' => 'Upload',
+        'no_files' => 'No files uploaded yet.',
+        'delete_file_confirm' => 'Delete this file version?',
     ],
 
     'categories' => [

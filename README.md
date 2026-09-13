@@ -64,8 +64,29 @@ php artisan serve
 
 - `categories` and `tags` are first-class tables now (`products.category` was a plain string in Phase 1; a migration backfilled it into `categories` and dropped the column).
 - Product name/description are stored per-locale in `product_translations` (replacing the old `name_en`/`name_bm`/`description_en`/`description_bm` columns) — see `Product::translation()`/`localizedName()`/`localizedDescription()`.
-- `product_files` exists for versioned downloadable files (schema only for now; secure signed downloads and customer entitlement are Phase 3 per the PRD).
 - Product cover images upload through the admin Product Manager onto the `public` disk (`storage/app/public/products/covers`, validated as an image, ≤2MB) — run `php artisan storage:link` locally.
+- `product_files` holds versioned downloadable files, uploaded from the same admin Product Manager (validated to `pdf,zip,docx,xlsx,csv`, ≤50MB) onto the **`local`** (private) disk — never the public one.
+
+## Cart, checkout and Billplz
+
+- Cart/checkout requires login (`carts` / `cart_items`, one cart per user). Add-to-cart lives on the product page (`App\Livewire\AddToCartButton`); `/cart` and `/checkout` are full-page Livewire components.
+- An order is multi-item (`orders` + `order_items`, snapshotting product name/price at checkout time — price changes later don't affect past orders).
+- `BillplzService::createBill()` builds the bill from the order's items/total; `App\Services\PaymentProcessor` is the single place that turns a Billplz notification into a paid order — both `BillplzController::callback` (server-to-server webhook) and `::redirect` (browser return) funnel through it, so the hardening only has to be written once:
+  - Every notification is recorded in `payment_events` (with `x_signature` stripped) before anything else, valid or not — an audit trail regardless of outcome.
+  - Marking an order paid happens inside a `DB::transaction` with `lockForUpdate()` on the order and payment rows, and only if the payment isn't already `paid` — safe against duplicate and out-of-order webhooks.
+  - The bill's reported amount is compared against the stored `payments.amount_cents`; a mismatch refuses to mark paid rather than trusting it.
+  - On success: `entitlements` are granted per order item (`firstOrCreate`, so re-processing is a no-op), an `invoices` row is created, and the user's cart is cleared.
+- See `tests/Feature/BillplzWebhookTest.php` for the valid/invalid-signature/unpaid/duplicate/amount-mismatch/unknown-bill scenarios this is tested against.
+
+## My Library and secure downloads
+
+- `/library` (`App\Livewire\MyLibrary`) lists the current user's `entitlements` with a download link per `product_files` row.
+- `GET /library/download/{entitlement}/{productFile}` (`App\Http\Controllers\DownloadController`) checks the entitlement belongs to the requesting user and the file belongs to the entitlement's product, then streams it from the private disk (the real storage path is never exposed) and logs a `downloads` row (IP + user agent) before returning it.
+- `/orders/{order}/invoice` renders a simple line-item invoice (`invoices.invoice_number` is `INV-{year}-{order id}`) — ownership-checked the same way.
+
+## Admin: orders
+
+- `/admin/orders` (`orders.view` permission — Admin and Finance roles) is a read-only order list for now. Refund handling and finer payment/dispute management are not built yet — flagged as Phase 4/5 follow-up, not silently assumed to exist.
 
 ## Forge setup
 

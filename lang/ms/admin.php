@@ -5,6 +5,13 @@ return [
         'dashboard' => 'Papan Pemuka',
         'products' => 'Produk',
         'categories' => 'Kategori',
+        'orders' => 'Pesanan',
+    ],
+
+    'orders' => [
+        'title' => 'Pesanan',
+        'items' => 'item',
+        'empty' => 'Tiada pesanan lagi.',
     ],
 
     'dashboard' => [
@@ -35,6 +42,11 @@ return [
         'empty' => 'Tiada produk lagi.',
         'saved' => 'Produk disimpan.',
         'deleted' => 'Produk dipadam.',
+        'files' => 'Fail muat turun',
+        'file_version' => 'Label versi',
+        'upload_file' => 'Muat naik',
+        'no_files' => 'Tiada fail dimuat naik lagi.',
+        'delete_file_confirm' => 'Padam versi fail ini?',
     ],
 
     'categories' => [

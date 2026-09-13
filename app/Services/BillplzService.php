@@ -9,14 +9,28 @@ class BillplzService
 {
     public function createBill(Order $order): array
     {
+        $order->loadMissing(['items', 'user']);
+
         return Http::withBasicAuth(config('services.billplz.api_key'), '')
             ->asForm()->post(config('services.billplz.endpoint').'/v3/bills', [
                 'collection_id' => config('services.billplz.collection_id'),
-                'email' => $order->customer_email, 'mobile' => $order->customer_phone, 'name' => $order->customer_name,
-                'amount' => $order->amount_cents, 'callback_url' => route('billplz.callback'),
-                'redirect_url' => route('billplz.redirect', $order), 'description' => 'Gaya B Marketing — '.$order->product->translation('en')?->name,
+                'email' => $order->user->email, 'mobile' => $order->customer_phone, 'name' => $order->user->name,
+                'amount' => $order->total_cents, 'callback_url' => route('billplz.callback'),
+                'redirect_url' => route('billplz.redirect', $order), 'description' => $this->describeOrder($order),
                 'reference_1_label' => 'Order', 'reference_1' => $order->reference,
             ])->throw()->json();
+    }
+
+    private function describeOrder(Order $order): string
+    {
+        $first = $order->items->first();
+        $label = $first?->product_name ?? 'Order';
+
+        if ($order->items->count() > 1) {
+            $label .= ' (+'.($order->items->count() - 1).' more)';
+        }
+
+        return 'Gaya B Marketing — '.$label;
     }
 
     public function validSignature(array $payload): bool

@@ -79,6 +79,35 @@
         </form>
     @endif
 
+    @if ($showForm && $editingId)
+        <div class="bg-white shadow rounded-lg p-6 space-y-4">
+            <h2 class="font-semibold text-lg">{{ __('admin.products.files') }}</h2>
+
+            <div class="divide-y">
+                @forelse ($editingFiles as $file)
+                    <div class="py-2 flex items-center justify-between text-sm">
+                        <span>{{ $file->original_name }} ({{ $file->version }}, {{ number_format($file->size_bytes / 1024, 0) }} KB)</span>
+                        <button wire:click="deleteFile({{ $file->id }})" wire:confirm="{{ __('admin.products.delete_file_confirm') }}" class="text-red-600 font-semibold">{{ __('admin.categories.delete') }}</button>
+                    </div>
+                @empty
+                    <p class="text-gray-500 text-sm py-2">{{ __('admin.products.no_files') }}</p>
+                @endforelse
+            </div>
+
+            <div class="flex items-end gap-3">
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700">{{ __('admin.products.file_version') }}</label>
+                    <input type="text" wire:model="newFileVersion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div class="flex-1">
+                    <input type="file" wire:model="newFile" class="mt-1 block w-full text-sm">
+                    @error('newFile') <span class="text-red-600 text-sm block">{{ $message }}</span> @enderror
+                </div>
+                <button type="button" wire:click="uploadFile" class="bg-ink text-white px-4 py-2 rounded font-semibold text-sm">{{ __('admin.products.upload_file') }}</button>
+            </div>
+        </div>
+    @endif
+
     <div class="bg-white shadow rounded-lg divide-y">
         @forelse ($products as $product)
             <div class="p-4 flex items-center justify-between">

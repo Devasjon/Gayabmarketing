@@ -37,15 +37,6 @@ class PublicRoutesTest extends TestCase
         $this->get(route('license'))->assertOk();
     }
 
-    public function test_checkout_is_disabled_by_default(): void
-    {
-        $product = Product::factory()->create(['slug' => 'checkout-test']);
-
-        $this->post(route('checkout.store'), [
-            'product_id' => $product->id, 'name' => 'Test', 'email' => 'test@example.com', 'phone' => '0123456789',
-        ])->assertStatus(503);
-    }
-
     public function test_health_check_responds(): void
     {
         $this->get('/up')->assertOk();

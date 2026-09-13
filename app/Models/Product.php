@@ -53,11 +53,11 @@ class Product extends Model
     }
 
     /**
-     * @return HasMany<Order, $this>
+     * @return HasMany<OrderItem, $this>
      */
-    public function orders(): HasMany
+    public function orderItems(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(OrderItem::class);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductFile;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -43,6 +44,12 @@ class ProductManager extends Component
 
     #[Validate('nullable|image|max:2048')]
     public $cover = null;
+
+    #[Validate('nullable|file|mimes:pdf,zip,docx,xlsx,csv|max:51200')]
+    public $newFile = null;
+
+    #[Validate('nullable|string|max:20')]
+    public string $newFileVersion = '1.0';
 
     public bool $showForm = false;
 
@@ -124,10 +131,46 @@ class ProductManager extends Component
         session()->flash('status', __('admin.products.deleted'));
     }
 
+    public function uploadFile(): void
+    {
+        $product = Product::findOrFail($this->editingId);
+        $this->authorize('update', $product);
+        $this->validateOnly('newFile');
+
+        if (! $this->newFile) {
+            return;
+        }
+
+        $path = $this->newFile->store('products/files/'.$product->id, 'local');
+
+        ProductFile::create([
+            'product_id' => $product->id,
+            'version' => $this->newFileVersion ?: '1.0',
+            'disk' => 'local',
+            'path' => $path,
+            'original_name' => $this->newFile->getClientOriginalName(),
+            'size_bytes' => $this->newFile->getSize(),
+        ]);
+
+        $this->reset(['newFile', 'newFileVersion']);
+        $this->newFileVersion = '1.0';
+        session()->flash('status', __('admin.products.saved'));
+    }
+
+    public function deleteFile(ProductFile $productFile): void
+    {
+        $product = Product::findOrFail($productFile->product_id);
+        $this->authorize('update', $product);
+
+        Storage::disk($productFile->disk)->delete($productFile->path);
+        $productFile->delete();
+    }
+
     private function resetForm(): void
     {
-        $this->reset(['editingId', 'nameEn', 'nameMs', 'descriptionEn', 'descriptionMs', 'categoryId', 'price', 'status', 'slug', 'cover']);
+        $this->reset(['editingId', 'nameEn', 'nameMs', 'descriptionEn', 'descriptionMs', 'categoryId', 'price', 'status', 'slug', 'cover', 'newFile', 'newFileVersion']);
         $this->status = 'draft';
+        $this->newFileVersion = '1.0';
         $this->resetValidation();
     }
 
@@ -143,6 +186,7 @@ class ProductManager extends Component
         return view('livewire.admin.product-manager', [
             'products' => Product::with(['category', 'translations'])->latest()->get(),
             'categories' => Category::orderBy('name')->get(),
+            'editingFiles' => $this->editingId ? Product::find($this->editingId)?->files : collect(),
         ])->layout('layouts.authenticated');
     }
 }

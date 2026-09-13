@@ -27,6 +27,7 @@ class RolePermissionSeeder extends Seeder
             PermissionEnum::ViewProducts->value,
             PermissionEnum::ManageProducts->value,
             PermissionEnum::ManageCategories->value,
+            PermissionEnum::ViewOrders->value,
         ]);
 
         Role::findByName(RoleEnum::ContentManager->value)->givePermissionTo([
@@ -38,6 +39,7 @@ class RolePermissionSeeder extends Seeder
 
         Role::findByName(RoleEnum::Finance->value)->givePermissionTo([
             PermissionEnum::AccessAdmin->value,
+            PermissionEnum::ViewOrders->value,
         ]);
 
         Role::findByName(RoleEnum::Support->value)->givePermissionTo([

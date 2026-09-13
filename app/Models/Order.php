@@ -2,23 +2,71 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
-    protected $fillable = ['reference', 'product_id', 'customer_name', 'customer_email', 'customer_phone', 'amount_cents', 'status', 'billplz_bill_id', 'paid_at', 'download_token'];
+    protected $fillable = ['reference', 'user_id', 'customer_phone', 'subtotal_cents', 'total_cents', 'currency', 'status', 'billplz_bill_id', 'paid_at'];
 
     protected function casts(): array
     {
-        return ['paid_at' => 'datetime', 'amount_cents' => 'integer'];
+        return [
+            'subtotal_cents' => 'integer',
+            'total_cents' => 'integer',
+            'status' => OrderStatus::class,
+            'paid_at' => 'datetime',
+        ];
     }
 
     /**
-     * @return BelongsTo<Product, $this>
+     * @return BelongsTo<User, $this>
      */
-    public function product(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return HasMany<OrderItem, $this>
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @return HasOne<Payment, $this>
+     */
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    /**
+     * @return HasMany<PaymentEvent, $this>
+     */
+    public function paymentEvents(): HasMany
+    {
+        return $this->hasMany(PaymentEvent::class);
+    }
+
+    /**
+     * @return HasMany<Entitlement, $this>
+     */
+    public function entitlements(): HasMany
+    {
+        return $this->hasMany(Entitlement::class);
+    }
+
+    /**
+     * @return HasOne<Invoice, $this>
+     */
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class);
     }
 }

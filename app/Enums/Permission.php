@@ -8,4 +8,5 @@ enum Permission: string
     case ViewProducts = 'products.view';
     case ManageProducts = 'products.manage';
     case ManageCategories = 'categories.manage';
+    case ViewOrders = 'orders.view';
 }

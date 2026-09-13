@@ -14,6 +14,10 @@
         @endforeach
     </div>
     <button id="theme" type="button" aria-label="{{ __('layout.controls.change_theme') }}">{{ ($theme ?? 'light') === 'dark' ? '☀' : '☾' }}</button>
-    <button class="ghost" type="button" disabled title="{{ __('messages.coming_soon') }}">{{ __('layout.controls.account') }}</button>
-    <button class="ghost" type="button" disabled title="{{ __('messages.coming_soon') }}">{{ __('layout.controls.cart', ['count' => 0]) }}</button>
+    @auth
+        <a href="{{ route('dashboard') }}" class="ghost">{{ __('layout.controls.account') }}</a>
+        <livewire:cart-count />
+    @else
+        <a href="{{ route('login') }}" class="ghost">{{ __('layout.controls.account') }}</a>
+    @endauth
 </div>

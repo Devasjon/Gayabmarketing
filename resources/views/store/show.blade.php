@@ -13,14 +13,7 @@
    <li>✓ {{ $item }}</li>
    @endforeach
   </ul>
-  <form method="post" action="{{ route('checkout.store') }}">
-   @csrf
-   <input type="hidden" name="product_id" value="{{ $product->id }}">
-   <input name="name" placeholder="{{ __('product.form.full_name') }}" required>
-   <input type="email" name="email" placeholder="{{ __('product.form.email') }}" required>
-   <input name="phone" placeholder="{{ __('product.form.phone') }}" required>
-   <button>{{ __('product.form.pay') }}</button>
-  </form>
+  <livewire:add-to-cart-button :product="$product" />
   <a class="link" href="{{ route('home') }}#products">{{ __('product.back') }}</a>
  </div>
 </section>
