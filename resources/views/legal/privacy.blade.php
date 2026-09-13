@@ -1,1 +1,7 @@
-@extends('layouts.app') @section('title','Privacy Policy') @section('content')<section class="legal"><h1>Privacy Policy</h1><p>GAYA BORNEO ENTERPRISE processes customer details only for orders, payment, support and lawful business records. Contact admin@gayabmarketing.com for privacy requests.</p></section>@endsection
+@extends('layouts.app')
+@section('title', __('legal.privacy.title').' | Gaya B Marketing')
+@section('content')
+<x-legal-page :title="__('legal.privacy.title')">
+ <p>{{ __('legal.privacy.body') }}</p>
+</x-legal-page>
+@endsection
