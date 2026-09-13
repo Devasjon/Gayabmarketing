@@ -8,12 +8,14 @@ class StoreController extends Controller
 {
     public function index()
     {
-        return view('store.index', ['products' => Product::published()->latest()->get()]);
+        return view('store.index');
     }
 
     public function show(Product $product)
     {
         abort_unless($product->status === 'published', 404);
+
+        $product->load(['category', 'translations']);
 
         return view('store.show', compact('product'));
     }

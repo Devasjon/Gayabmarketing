@@ -14,7 +14,7 @@ class BillplzService
                 'collection_id' => config('services.billplz.collection_id'),
                 'email' => $order->customer_email, 'mobile' => $order->customer_phone, 'name' => $order->customer_name,
                 'amount' => $order->amount_cents, 'callback_url' => route('billplz.callback'),
-                'redirect_url' => route('billplz.redirect', $order), 'description' => 'Gaya B Marketing — '.$order->product->name_en,
+                'redirect_url' => route('billplz.redirect', $order), 'description' => 'Gaya B Marketing — '.$order->product->translation('en')?->name,
                 'reference_1_label' => 'Order', 'reference_1' => $order->reference,
             ])->throw()->json();
     }

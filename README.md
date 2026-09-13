@@ -5,8 +5,10 @@ Laravel storefront for **GAYA BORNEO ENTERPRISE** — digital products and publi
 ## Stack
 
 - Laravel 13, PHP `^8.4` (dev/CI run PHP 8.4 and 8.5; production targets 8.5 once verified on Forge, with 8.4 as fallback)
-- Livewire 4 for interactive components (product catalog filter), Alpine (bundled with Livewire) for lightweight UI (FAQ accordion)
+- Livewire 4 for interactive components (product/admin catalog filters and CRUD), Alpine (bundled with Livewire) for lightweight UI (FAQ accordion)
 - Tailwind CSS 4 + Vite
+- Authentication via Laravel Breeze's plain Blade stack (traditional controllers, no Livewire/Volt involved — kept separate from the app's own Livewire 4 usage)
+- Authorization via `spatie/laravel-permission` (roles/permissions) and Laravel Policies
 - MySQL 8.4 in production; SQLite for local development
 - PWA: web app manifest, versioned service worker, offline fallback page
 
@@ -49,6 +51,21 @@ php artisan serve
 - Offline fallback: `public/offline.html` (static, no Blade/session dependency).
 - `resources/js/pwa.js` registers the service worker, shows an install prompt once the browser fires `beforeinstallprompt`, shows an iOS "Add to Home Screen" tip, and prompts the user to refresh when a new service worker version is ready.
 - Service worker registration could not be verified inside this sandbox's embedded preview browser (registration was blocked there, likely an automation/CDP restriction) — verify manually in a real Chrome/Edge/mobile Safari session before launch.
+
+## Authentication, roles and the admin area
+
+- Registration, login, password reset, email verification and profile management are Breeze's standard Blade stack (`routes/auth.php`), reskinned to the brand palette (`resources/views/layouts/guest.blade.php`, `layouts/navigation.blade.php`) instead of the default Tailwind indigo theme.
+- New registrations are automatically assigned the `Customer` role via `App\Listeners\AssignCustomerRoleToNewUser` (listens for `Illuminate\Auth\Events\Registered`).
+- Six roles from the PRD are seeded by `RolePermissionSeeder`: Super Admin, Admin, Finance, Content Manager, Support, Customer. Only a small permission set exists so far (`admin.access`, `products.view`, `products.manage`, `categories.manage`) — expand this as later phases add finance/CRM/booking modules.
+- `/admin/*` routes (`routes/admin.php`) require `auth`, `verified`, and the `permission:admin.access` middleware (spatie's middleware aliases are registered in `bootstrap/app.php`). Individual actions are further gated by `App\Policies\ProductPolicy` / `CategoryPolicy` inside the Livewire components (`App\Livewire\Admin\*`) — route access and action authorization are deliberately separate checks.
+- The admin dashboard, product manager and category manager are full-page Livewire 4 components using `layouts.authenticated` (distinct from the public `layouts.app` to avoid clashing with Breeze's own `layouts.app` convention).
+
+## Catalog data model
+
+- `categories` and `tags` are first-class tables now (`products.category` was a plain string in Phase 1; a migration backfilled it into `categories` and dropped the column).
+- Product name/description are stored per-locale in `product_translations` (replacing the old `name_en`/`name_bm`/`description_en`/`description_bm` columns) — see `Product::translation()`/`localizedName()`/`localizedDescription()`.
+- `product_files` exists for versioned downloadable files (schema only for now; secure signed downloads and customer entitlement are Phase 3 per the PRD).
+- Product cover images upload through the admin Product Manager onto the `public` disk (`storage/app/public/products/covers`, validated as an image, ≤2MB) — run `php artisan storage:link` locally.
 
 ## Forge setup
 

@@ -6,12 +6,13 @@
         </x-empty-state>
     @else
         <div class="filters" role="group" aria-label="Filter products by category">
-            @foreach ($this->categories() as $key)
+            <button type="button" class="filter-btn {{ $category === 'all' ? 'is-active' : '' }}" wire:click="setCategory('all')">{{ __('home.products.filters.all') }}</button>
+            @foreach ($categories as $cat)
                 <button
                     type="button"
-                    class="filter-btn {{ $category === $key ? 'is-active' : '' }}"
-                    wire:click="setCategory('{{ $key }}')"
-                >{{ __('home.products.filters.'.$key) }}</button>
+                    class="filter-btn {{ $category === $cat->slug ? 'is-active' : '' }}"
+                    wire:click="setCategory('{{ $cat->slug }}')"
+                >{{ $cat->name }}</button>
             @endforeach
         </div>
         <div class="grid" wire:loading.class="is-loading">

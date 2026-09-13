@@ -17,22 +17,14 @@ class PublicRoutesTest extends TestCase
 
     public function test_product_page_loads_for_published_product(): void
     {
-        $product = Product::create([
-            'name_en' => 'Test Product', 'name_bm' => 'Produk Ujian', 'slug' => 'test-product',
-            'category' => 'Ebook', 'description_en' => 'Desc', 'description_bm' => 'Huraian',
-            'price_cents' => 1000, 'status' => 'published',
-        ]);
+        $product = Product::factory()->create(['slug' => 'test-product']);
 
         $this->get(route('products.show', $product))->assertOk();
     }
 
     public function test_unpublished_product_page_returns_404(): void
     {
-        $product = Product::create([
-            'name_en' => 'Draft Product', 'name_bm' => 'Draf', 'slug' => 'draft-product',
-            'category' => 'Ebook', 'description_en' => 'Desc', 'description_bm' => 'Huraian',
-            'price_cents' => 1000, 'status' => 'draft',
-        ]);
+        $product = Product::factory()->draft()->create(['slug' => 'draft-product']);
 
         $this->get(route('products.show', $product))->assertNotFound();
     }
@@ -47,11 +39,7 @@ class PublicRoutesTest extends TestCase
 
     public function test_checkout_is_disabled_by_default(): void
     {
-        $product = Product::create([
-            'name_en' => 'Test Product', 'name_bm' => 'Produk Ujian', 'slug' => 'checkout-test',
-            'category' => 'Ebook', 'description_en' => 'Desc', 'description_bm' => 'Huraian',
-            'price_cents' => 1000, 'status' => 'published',
-        ]);
+        $product = Product::factory()->create(['slug' => 'checkout-test']);
 
         $this->post(route('checkout.store'), [
             'product_id' => $product->id, 'name' => 'Test', 'email' => 'test@example.com', 'phone' => '0123456789',

@@ -21,7 +21,7 @@ class BillplzController extends Controller
         abort_unless($billplz->validRedirectSignature($request->all()), 403);
         $this->markPaid($request->input('billplz.id'), $request->boolean('billplz.paid'));
 
-        return view('store.receipt', ['order' => $order->fresh('product')]);
+        return view('store.receipt', ['order' => $order->fresh(['product.translations'])]);
     }
 
     private function markPaid(?string $billId, bool $paid): void

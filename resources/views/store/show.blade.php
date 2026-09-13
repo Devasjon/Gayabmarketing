@@ -2,9 +2,9 @@
 @section('title',$product->localizedName().' | Gaya B Marketing')
 @section('content')
 <section class="product-detail">
- <div class="cover large"><span>{{ strtoupper($product->category) }}</span><strong>{{ $product->localizedName() }}</strong></div>
+ <div class="cover large"><span>{{ strtoupper($product->category?->name ?? '') }}</span><strong>{{ $product->localizedName() }}</strong></div>
  <div>
-  <p class="eyebrow">{{ strtoupper($product->category) }}</p>
+  <p class="eyebrow">{{ strtoupper($product->category?->name ?? '') }}</p>
   <h1>{{ $product->localizedName() }}</h1>
   <p>{{ $product->localizedDescription() }}</p>
   <h2>RM{{ number_format($product->price_cents/100,2) }}</h2>

@@ -1,6 +1,6 @@
 @props(['product'])
 @php
-    $kicker = __('home.products.kickers')[$product->slug] ?? ['sym' => '✦', 'label' => strtoupper($product->category)];
+    $kicker = __('home.products.kickers')[$product->slug] ?? ['sym' => '✦', 'label' => strtoupper($product->category?->name ?? '')];
 @endphp
 <article>
     <div class="cover">
@@ -8,7 +8,7 @@
         <strong>{{ $product->localizedName() }}</strong>
     </div>
     <x-badge class="kicker">{{ $kicker['label'] }}</x-badge>
-    <x-badge>{{ strtoupper($product->category) }}</x-badge>
+    <x-badge>{{ strtoupper($product->category?->name ?? '') }}</x-badge>
     <h3>{{ $product->localizedName() }}</h3>
     <p>{{ $product->localizedDescription() }}</p>
     <b>RM{{ number_format($product->price_cents / 100, 2) }}</b>
