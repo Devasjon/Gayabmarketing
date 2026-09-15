@@ -3,9 +3,11 @@
 /bootstrap/cache/*.php
 /public/build
 /public/hot
+/public/storage
 /storage/*.key
 /storage/framework/cache/*
 /storage/framework/sessions/*
+/storage/framework/testing/*
 /storage/framework/views/*
 /storage/logs/*
 /database/database.sqlite
@@ -17,6 +19,7 @@ Homestead.yaml
 auth.json
 npm-debug.log
 yarn-error.log
+/.claude
 /.fleet
 /.idea
 /.nova
