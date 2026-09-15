@@ -8,7 +8,7 @@
     <x-admin.nav />
 
     @if (session('status'))
-        <div class="bg-green-50 text-green-700 text-sm px-4 py-3 rounded">{{ session('status') }}</div>
+        <div role="status" class="bg-green-50 text-green-700 text-sm px-4 py-3 rounded">{{ session('status') }}</div>
     @endif
 
     @if ($showForm)
@@ -129,4 +129,6 @@
             <p class="p-4 text-gray-500">{{ __('admin.products.empty') }}</p>
         @endforelse
     </div>
+
+    {{ $products->links() }}
 </div>

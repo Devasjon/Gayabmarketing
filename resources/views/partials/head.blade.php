@@ -7,7 +7,7 @@
 <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
 <link rel="apple-touch-icon" href="{{ asset('icons/icon-192.png') }}">
 <link rel="icon" href="{{ asset('icons/icon-192.png') }}">
-<script>
+<script @if($cspNonce ?? null) nonce="{{ $cspNonce }}" @endif>
 (function(){
     var stored = document.cookie.replace(/(?:(?:^|.*;\s*)gbm_theme\s*=\s*([^;]*).*$)|^.*$/, '$1');
     if (!stored) {

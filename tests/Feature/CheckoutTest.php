@@ -62,4 +62,29 @@ class CheckoutTest extends TestCase
         $this->assertDatabaseHas('payments', ['order_id' => $order->id, 'provider_bill_id' => 'bill-123', 'amount_cents' => 10000]);
         $this->assertDatabaseHas('order_items', ['order_id' => $order->id, 'product_id' => $product->id, 'quantity' => 2, 'line_total_cents' => 10000]);
     }
+
+    public function test_checkout_pay_is_rate_limited_per_user(): void
+    {
+        config(['services.billplz.checkout_enabled' => true]);
+
+        $user = User::factory()->create();
+        $product = Product::factory()->create(['price_cents' => 5000]);
+        $cart = $user->cart()->create();
+        $cart->items()->create(['product_id' => $product->id, 'quantity' => 1]);
+
+        $callCount = 0;
+        Http::fake(function () use (&$callCount) {
+            $id = 'bill-'.$callCount++;
+
+            return Http::response(['id' => $id, 'url' => "https://billplz-sandbox.test/bills/{$id}"], 200);
+        });
+
+        $component = Livewire::actingAs($user)->test(Checkout::class)->set('phone', '0123456789');
+
+        for ($i = 0; $i < 10; $i++) {
+            $component->call('pay');
+        }
+
+        $component->call('pay')->assertStatus(429);
+    }
 }

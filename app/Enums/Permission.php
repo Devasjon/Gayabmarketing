@@ -12,4 +12,5 @@ enum Permission: string
     case ViewCustomers = 'customers.view';
     case ManageCustomerNotes = 'customers.manage_notes';
     case ManageTasks = 'tasks.manage';
+    case ViewAuditLogs = 'audit_logs.view';
 }

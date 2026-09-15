@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\FinanceExportController;
+use App\Livewire\Admin\AuditLogManager;
 use App\Livewire\Admin\CategoryManager;
 use App\Livewire\Admin\CustomerManager;
 use App\Livewire\Admin\Dashboard;
@@ -22,4 +23,5 @@ Route::middleware(['auth', 'verified', 'permission:admin.access'])
         Route::get('/finance/export', FinanceExportController::class)->name('finance.export');
         Route::get('/tasks', TaskBoard::class)->name('tasks');
         Route::get('/customers', CustomerManager::class)->name('customers');
+        Route::get('/audit-log', AuditLogManager::class)->name('audit-log');
     });

@@ -33,4 +33,30 @@ class RegistrationTest extends TestCase
         $user = User::where('email', 'test@example.com')->firstOrFail();
         $this->assertTrue($user->hasRole(Role::Customer->value));
     }
+
+    public function test_registration_is_rate_limited(): void
+    {
+        for ($i = 0; $i < 6; $i++) {
+            $this->post('/register', [
+                'name' => 'Test User',
+                'email' => "test{$i}@example.com",
+                'password' => 'password',
+                'password_confirmation' => 'password',
+            ]);
+
+            // Each successful attempt logs the new user in, and the 'guest'
+            // middleware on /register would otherwise redirect subsequent
+            // attempts before they ever reach the throttle check.
+            $this->post('/logout');
+        }
+
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'onemore@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertStatus(429);
+    }
 }

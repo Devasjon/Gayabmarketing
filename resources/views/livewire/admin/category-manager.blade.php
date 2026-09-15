@@ -3,10 +3,10 @@
     <x-admin.nav />
 
     @if (session('status'))
-        <div class="bg-green-50 text-green-700 text-sm px-4 py-3 rounded">{{ session('status') }}</div>
+        <div role="status" class="bg-green-50 text-green-700 text-sm px-4 py-3 rounded">{{ session('status') }}</div>
     @endif
     @if (session('error'))
-        <div class="bg-red-50 text-red-700 text-sm px-4 py-3 rounded">{{ session('error') }}</div>
+        <div role="alert" class="bg-red-50 text-red-700 text-sm px-4 py-3 rounded">{{ session('error') }}</div>
     @endif
 
     <form wire:submit="save" class="bg-white shadow rounded-lg p-6 flex gap-4 items-start">
@@ -18,7 +18,7 @@
         <div class="pt-6 flex gap-2">
             <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded font-semibold text-sm">{{ __('admin.categories.save') }}</button>
             @if ($editingId)
-                <button type="button" wire:click="cancel" class="text-gray-500 text-sm">{{ __('product.back') }}</button>
+                <button type="button" wire:click="cancel" class="text-gray-500 text-sm">{{ __('admin.products.cancel') }}</button>
             @endif
         </div>
     </form>
@@ -39,4 +39,6 @@
             <p class="p-4 text-gray-500">{{ __('admin.categories.empty') }}</p>
         @endforelse
     </div>
+
+    {{ $categories->links() }}
 </div>

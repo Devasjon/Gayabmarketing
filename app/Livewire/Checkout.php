@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Services\BillplzService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -19,6 +20,15 @@ class Checkout extends Component
     public function pay(BillplzService $billplz): mixed
     {
         abort_unless(config('services.billplz.checkout_enabled'), 503, 'Checkout is not open yet.');
+
+        // Livewire actions all share one HTTP endpoint, so route-level
+        // throttle:* middleware wouldn't isolate this specific action —
+        // rate limit it directly, keyed per user.
+        $throttleKey = 'checkout-pay:'.auth()->id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 10)) {
+            abort(429, 'Too many checkout attempts. Please wait a moment and try again.');
+        }
+        RateLimiter::hit($throttleKey, 60);
 
         $this->validate();
 

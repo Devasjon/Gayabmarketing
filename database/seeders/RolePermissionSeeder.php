@@ -32,6 +32,7 @@ class RolePermissionSeeder extends Seeder
             PermissionEnum::ViewCustomers->value,
             PermissionEnum::ManageCustomerNotes->value,
             PermissionEnum::ManageTasks->value,
+            PermissionEnum::ViewAuditLogs->value,
         ]);
 
         // Content Manager: products, content, media and SEO.

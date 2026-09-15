@@ -13,6 +13,16 @@ return [
         'finance' => 'Finance',
         'tasks' => 'Tasks',
         'customers' => 'Customers',
+        'audit' => 'Audit Log',
+    ],
+
+    'audit' => [
+        'title' => 'Audit Log',
+        'system' => 'System',
+        'created' => 'created :model #:id',
+        'updated' => 'updated :model #:id',
+        'deleted' => 'deleted :model #:id',
+        'empty' => 'No activity recorded yet.',
     ],
 
     'finance' => [

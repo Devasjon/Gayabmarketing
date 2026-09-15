@@ -26,4 +26,9 @@
             {{ __('admin.nav.customers') }}
         </a>
     @endcan
+    @can(\App\Enums\Permission::ViewAuditLogs->value)
+        <a href="{{ route('admin.audit-log') }}" class="pb-3 text-sm font-semibold {{ request()->routeIs('admin.audit-log') ? 'text-brand-600 border-b-2 border-brand-600' : 'text-gray-500' }}">
+            {{ __('admin.nav.audit') }}
+        </a>
+    @endcan
 </nav>

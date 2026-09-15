@@ -13,6 +13,16 @@ return [
         'finance' => 'Kewangan',
         'tasks' => 'Tugasan',
         'customers' => 'Pelanggan',
+        'audit' => 'Log Audit',
+    ],
+
+    'audit' => [
+        'title' => 'Log Audit',
+        'system' => 'Sistem',
+        'created' => 'mencipta :model #:id',
+        'updated' => 'mengemaskini :model #:id',
+        'deleted' => 'memadam :model #:id',
+        'empty' => 'Tiada aktiviti direkodkan lagi.',
     ],
 
     'finance' => [

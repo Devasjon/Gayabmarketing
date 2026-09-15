@@ -7,9 +7,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class CategoryManager extends Component
 {
+    use WithPagination;
+
     public ?int $editingId = null;
 
     #[Validate('required|string|max:120')]
@@ -67,7 +70,7 @@ class CategoryManager extends Component
     public function render(): View
     {
         return view('livewire.admin.category-manager', [
-            'categories' => Category::withCount('products')->orderBy('name')->get(),
+            'categories' => Category::withCount('products')->orderBy('name')->paginate(20),
         ])->layout('layouts.authenticated');
     }
 }

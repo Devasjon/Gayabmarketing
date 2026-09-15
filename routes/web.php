@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StoreController::class, 'index'])->name('home');
 Route::get('/products/{product:slug}', [StoreController::class, 'show'])->name('products.show');
-Route::post('/billplz/callback', [BillplzController::class, 'callback'])->name('billplz.callback');
+Route::post('/billplz/callback', [BillplzController::class, 'callback'])->middleware('throttle:60,1')->name('billplz.callback');
 Route::get('/locale/{locale}', [LocaleController::class, 'update'])->name('locale.update');
 Route::view('/privacy', 'legal.privacy')->name('privacy');
 Route::view('/terms', 'legal.terms')->name('terms');

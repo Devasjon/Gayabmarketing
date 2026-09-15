@@ -11,10 +11,11 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class ProductManager extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
 
     public ?int $editingId = null;
 
@@ -184,7 +185,7 @@ class ProductManager extends Component
     public function render(): View
     {
         return view('livewire.admin.product-manager', [
-            'products' => Product::with(['category', 'translations'])->latest()->get(),
+            'products' => Product::with(['category', 'translations'])->latest()->paginate(20),
             'categories' => Category::orderBy('name')->get(),
             'editingFiles' => $this->editingId ? Product::find($this->editingId)?->files : collect(),
         ])->layout('layouts.authenticated');
