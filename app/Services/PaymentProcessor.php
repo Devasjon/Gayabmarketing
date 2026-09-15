@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\PaymentStatus;
+use App\Mail\OrderConfirmationMail;
 use App\Models\Cart;
 use App\Models\Entitlement;
 use App\Models\Invoice;
@@ -11,6 +12,7 @@ use App\Models\Payment;
 use App\Models\PaymentEvent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentProcessor
 {
@@ -43,9 +45,11 @@ class PaymentProcessor
             return;
         }
 
-        DB::transaction(function () use ($order, $billId, $reportedAmountCents) {
-            /** @var Order $order */
-            $order = Order::whereKey($order->id)->lockForUpdate()->first();
+        $orderId = $order->id;
+        $wasJustPaid = false;
+
+        DB::transaction(function () use ($orderId, $billId, $reportedAmountCents, &$wasJustPaid) {
+            $order = Order::whereKey($orderId)->lockForUpdate()->first();
             $payment = Payment::where('order_id', $order->id)->lockForUpdate()->first();
 
             if (! $payment || $payment->provider_bill_id !== $billId) {
@@ -82,7 +86,14 @@ class PaymentProcessor
             );
 
             Cart::where('user_id', $order->user_id)->first()?->items()->delete();
+
+            $wasJustPaid = true;
         });
+
+        if ($wasJustPaid) {
+            $paidOrder = Order::with(['items', 'user'])->findOrFail($orderId);
+            Mail::to($paidOrder->user->email)->queue(new OrderConfirmationMail($paidOrder));
+        }
     }
 
     private function redact(array $payload): array

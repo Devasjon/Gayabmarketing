@@ -31,7 +31,7 @@
                     <p class="text-sm text-gray-500">{{ $category->products_count }} {{ __('admin.dashboard.total_products') }}</p>
                 </div>
                 <div class="flex gap-3 text-sm">
-                    <button wire:click="edit({{ $category->id }})" class="text-brand-600 font-semibold">{{ __('admin.products.edit') }}</button>
+                    <button wire:click="edit({{ $category->id }})" class="text-brand-600 font-semibold">{{ __('admin.actions.edit') }}</button>
                     <button wire:click="delete({{ $category->id }})" wire:confirm="{{ __('admin.categories.delete_confirm') }}" class="text-red-600 font-semibold">{{ __('admin.categories.delete') }}</button>
                 </div>
             </div>

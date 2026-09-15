@@ -56,7 +56,7 @@ php artisan serve
 
 - Registration, login, password reset, email verification and profile management are Breeze's standard Blade stack (`routes/auth.php`), reskinned to the brand palette (`resources/views/layouts/guest.blade.php`, `layouts/navigation.blade.php`) instead of the default Tailwind indigo theme.
 - New registrations are automatically assigned the `Customer` role via `App\Listeners\AssignCustomerRoleToNewUser` (listens for `Illuminate\Auth\Events\Registered`).
-- Six roles from the PRD are seeded by `RolePermissionSeeder`: Super Admin, Admin, Finance, Content Manager, Support, Customer. Only a small permission set exists so far (`admin.access`, `products.view`, `products.manage`, `categories.manage`) — expand this as later phases add finance/CRM/booking modules.
+- Six roles from the PRD are seeded by `RolePermissionSeeder`: Super Admin, Admin, Finance, Content Manager, Support, Customer, with permissions assigned per the PRD's role table (e.g. Support gets `orders.view` + `customers.*` but not `products.manage`; Finance gets `orders.view` for the finance dashboard but not customer/product access).
 - `/admin/*` routes (`routes/admin.php`) require `auth`, `verified`, and the `permission:admin.access` middleware (spatie's middleware aliases are registered in `bootstrap/app.php`). Individual actions are further gated by `App\Policies\ProductPolicy` / `CategoryPolicy` inside the Livewire components (`App\Livewire\Admin\*`) — route access and action authorization are deliberately separate checks.
 - The admin dashboard, product manager and category manager are full-page Livewire 4 components using `layouts.authenticated` (distinct from the public `layouts.app` to avoid clashing with Breeze's own `layouts.app` convention).
 
@@ -86,7 +86,26 @@ php artisan serve
 
 ## Admin: orders
 
-- `/admin/orders` (`orders.view` permission — Admin and Finance roles) is a read-only order list for now. Refund handling and finer payment/dispute management are not built yet — flagged as Phase 4/5 follow-up, not silently assumed to exist.
+- `/admin/orders` (`orders.view` permission — Admin and Finance roles) is a read-only order list for now. Refund handling and finer payment/dispute management are not built yet — flagged as a follow-up, not silently assumed to exist.
+
+## Transactional email (Resend)
+
+- Mail is sent via Laravel's built-in `resend` transport (`resend/resend-php`, `MAIL_MAILER=resend`, `RESEND_KEY` env var). Locally, `.env` uses `MAIL_MAILER=log` so emails land in `storage/logs/laravel.log` instead of requiring a real key.
+- `App\Mail\OrderConfirmationMail` (implements `ShouldQueue`) is dispatched from `PaymentProcessor` right after an order is marked paid — the same "only once, even on duplicate webhooks" guarantee that protects entitlements also protects this email from double-sending.
+- Queues now run on the `database` driver (`QUEUE_CONNECTION=database`; `jobs`/`failed_jobs` tables added) instead of `sync` — run `php artisan queue:work` locally to process them, and Forge's queue daemon in production (already restarted on deploy via `queue:restart` in `forge/deploy.sh`).
+
+## Admin: finance, tasks and customers
+
+- **Finance** (`/admin/finance`, `orders.view` — Admin/Finance): total/this-month revenue and a 30-day daily breakdown computed directly from `orders`/`payments` (no separate ledger table), plus a CSV export (`/admin/finance/export`) of every paid order.
+- **Tasks** (`/admin/tasks`, `tasks.manage` — all staff roles): a Kanban board (To Do / In Progress / Done). Moving a card is a plain "Move to" `<select>`, not drag-and-drop — this was a deliberate choice to satisfy the PRD's touch/accessibility requirement directly rather than bolting a non-drag fallback onto a drag library. A "due soon" panel lists tasks due within 3 days and flags overdue ones.
+- **Customers** (`/admin/customers`, `customers.view` — Admin/Support): a read-only customer list (order count, total spent) with a detail view where staff can leave notes (`customer_notes`, `customers.manage_notes`) — this is the CRM the PRD asks for; it's deliberately just notes on existing `User` records rather than a separate contact model, since customers already are the CRM's contacts.
+
+## Not built this phase (flagged, not silently skipped)
+
+- **Booking** (in-house booking/scheduling) — the PRD doesn't specify what's being booked or its rules closely enough to design a schema without guessing; needs a product decision first.
+- **WhatsApp (WaSenderAPI)** — the PRD itself says this comes "after the main flow is stable"; also needs a real API key this environment doesn't have, same situation Billplz was in during Phase 1.
+- **Marketing/SEO campaign management** — meta tags/Open Graph/structured data from earlier phases already cover baseline SEO; a campaign-builder UI is a separate, more product-defined piece of work.
+- **Refund workflow** from the admin side (see Admin: orders above).
 
 ## Forge setup
 
@@ -107,6 +126,13 @@ Required environment variables:
 - `BILLPLZ_X_SIGNATURE`
 - `BILLPLZ_ENDPOINT=https://www.billplz-sandbox.com/api`
 - `BILLPLZ_CHECKOUT_ENABLED=false`
+
+## Resend
+
+Required environment variables:
+
+- `MAIL_MAILER=resend`
+- `RESEND_KEY`
 
 ## Testing
 

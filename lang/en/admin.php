@@ -1,11 +1,68 @@
 <?php
 
 return [
+    'actions' => [
+        'edit' => 'Edit',
+    ],
+
     'nav' => [
         'dashboard' => 'Dashboard',
         'products' => 'Products',
         'categories' => 'Categories',
         'orders' => 'Orders',
+        'finance' => 'Finance',
+        'tasks' => 'Tasks',
+        'customers' => 'Customers',
+    ],
+
+    'finance' => [
+        'title' => 'Finance',
+        'export_csv' => 'Export CSV',
+        'total_revenue' => 'Total revenue',
+        'this_month' => 'This month',
+        'paid_orders' => 'Paid orders',
+        'last_30_days' => 'Last 30 days',
+        'empty' => 'No paid orders in this period yet.',
+    ],
+
+    'tasks' => [
+        'title' => 'Tasks',
+        'new' => 'New task',
+        'edit' => 'Edit task',
+        'name' => 'Title',
+        'description' => 'Description',
+        'due_date' => 'Due date',
+        'assignee' => 'Assigned to',
+        'unassigned' => 'Unassigned',
+        'save' => 'Save',
+        'cancel' => 'Cancel',
+        'delete' => 'Delete',
+        'delete_confirm' => 'Delete this task?',
+        'move_to' => 'Move to',
+        'due_soon' => 'Due soon',
+        'no_due_tasks' => 'Nothing due in the next 3 days.',
+        'overdue' => 'Overdue',
+        'status' => [
+            'todo' => 'To Do',
+            'in_progress' => 'In Progress',
+            'done' => 'Done',
+        ],
+    ],
+
+    'customers' => [
+        'title' => 'Customers',
+        'name' => 'Name',
+        'email' => 'Email',
+        'joined' => 'Joined',
+        'orders' => 'Orders',
+        'total_spent' => 'Total spent',
+        'view' => 'View',
+        'back' => '← Back to customers',
+        'notes' => 'Notes',
+        'add_note' => 'Add note',
+        'note_placeholder' => 'Add a note about this customer…',
+        'no_notes' => 'No notes yet.',
+        'empty' => 'No customers yet.',
     ],
 
     'orders' => [

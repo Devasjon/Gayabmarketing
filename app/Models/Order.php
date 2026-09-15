@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property Carbon|null $paid_at
+ */
 class Order extends Model
 {
     protected $fillable = ['reference', 'user_id', 'customer_phone', 'subtotal_cents', 'total_cents', 'currency', 'status', 'billplz_bill_id', 'paid_at'];

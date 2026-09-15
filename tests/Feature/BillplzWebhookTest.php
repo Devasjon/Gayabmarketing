@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use App\Enums\OrderStatus;
+use App\Mail\OrderConfirmationMail;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class BillplzWebhookTest extends TestCase
@@ -20,6 +22,7 @@ class BillplzWebhookTest extends TestCase
     {
         parent::setUp();
         config(['services.billplz.x_signature' => self::SECRET]);
+        Mail::fake();
     }
 
     private function makeOrder(int $amountCents = 5000): Order
@@ -84,6 +87,7 @@ class BillplzWebhookTest extends TestCase
         $this->assertDatabaseHas('invoices', ['order_id' => $order->id]);
         $this->assertDatabaseCount('cart_items', 0);
         $this->assertDatabaseHas('payment_events', ['order_id' => $order->id, 'signature_valid' => 1]);
+        Mail::assertQueued(OrderConfirmationMail::class, fn ($mail) => $mail->order->id === $order->id);
     }
 
     public function test_invalid_signature_does_not_mark_order_paid(): void
@@ -119,6 +123,7 @@ class BillplzWebhookTest extends TestCase
 
         $this->assertDatabaseCount('entitlements', 1);
         $this->assertDatabaseCount('invoices', 1);
+        Mail::assertQueued(OrderConfirmationMail::class, 1);
     }
 
     public function test_amount_mismatch_refuses_to_mark_paid(): void

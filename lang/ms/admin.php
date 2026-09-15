@@ -1,11 +1,68 @@
 <?php
 
 return [
+    'actions' => [
+        'edit' => 'Edit',
+    ],
+
     'nav' => [
         'dashboard' => 'Papan Pemuka',
         'products' => 'Produk',
         'categories' => 'Kategori',
         'orders' => 'Pesanan',
+        'finance' => 'Kewangan',
+        'tasks' => 'Tugasan',
+        'customers' => 'Pelanggan',
+    ],
+
+    'finance' => [
+        'title' => 'Kewangan',
+        'export_csv' => 'Eksport CSV',
+        'total_revenue' => 'Jumlah hasil',
+        'this_month' => 'Bulan ini',
+        'paid_orders' => 'Pesanan dibayar',
+        'last_30_days' => '30 hari terakhir',
+        'empty' => 'Tiada pesanan dibayar dalam tempoh ini lagi.',
+    ],
+
+    'tasks' => [
+        'title' => 'Tugasan',
+        'new' => 'Tugasan baharu',
+        'edit' => 'Edit tugasan',
+        'name' => 'Tajuk',
+        'description' => 'Huraian',
+        'due_date' => 'Tarikh akhir',
+        'assignee' => 'Ditugaskan kepada',
+        'unassigned' => 'Belum ditugaskan',
+        'save' => 'Simpan',
+        'cancel' => 'Batal',
+        'delete' => 'Padam',
+        'delete_confirm' => 'Padam tugasan ini?',
+        'move_to' => 'Pindah ke',
+        'due_soon' => 'Akan tamat tempoh',
+        'no_due_tasks' => 'Tiada tugasan dalam 3 hari akan datang.',
+        'overdue' => 'Tertunggak',
+        'status' => [
+            'todo' => 'Perlu Buat',
+            'in_progress' => 'Sedang Dijalankan',
+            'done' => 'Selesai',
+        ],
+    ],
+
+    'customers' => [
+        'title' => 'Pelanggan',
+        'name' => 'Nama',
+        'email' => 'E-mel',
+        'joined' => 'Menyertai',
+        'orders' => 'Pesanan',
+        'total_spent' => 'Jumlah perbelanjaan',
+        'view' => 'Lihat',
+        'back' => '← Kembali ke pelanggan',
+        'notes' => 'Nota',
+        'add_note' => 'Tambah nota',
+        'note_placeholder' => 'Tambah nota tentang pelanggan ini…',
+        'no_notes' => 'Tiada nota lagi.',
+        'empty' => 'Tiada pelanggan lagi.',
     ],
 
     'orders' => [
