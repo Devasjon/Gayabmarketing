@@ -15,6 +15,11 @@ class PublicRoutesTest extends TestCase
         $this->get(route('home'))->assertOk();
     }
 
+    public function test_home_page_links_to_registration_for_guests(): void
+    {
+        $this->get(route('home'))->assertSee(route('register'), false);
+    }
+
     public function test_product_page_loads_for_published_product(): void
     {
         $product = Product::factory()->create(['slug' => 'test-product']);

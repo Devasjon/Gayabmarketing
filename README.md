@@ -138,6 +138,27 @@ php artisan serve
 6. Confirm the domain is `www.gayabmarketing.com` and enable SSL.
 7. Keep checkout disabled until real products, files, prices and legal pages are approved.
 
+### First superadmin account
+
+No admin user is seeded — `DatabaseSeeder` only creates roles/permissions and demo catalog products, deliberately shipping no default credentials. After the first successful deploy, create one over SSH (Forge's **Server → SSH** tab):
+
+```bash
+cd /home/forge/www.gayabmarketing.com
+php artisan tinker
+```
+
+```php
+$u = App\Models\User::create([
+    'name' => 'Your Name',
+    'email' => 'you@yourdomain.com',
+    'password' => bcrypt('choose-a-strong-password-here'),
+    'email_verified_at' => now(),
+]);
+$u->assignRole(App\Enums\Role::SuperAdmin->value);
+```
+
+Log in at `/login` with that email/password. Type the password directly into tinker yourself rather than having it typed or generated for you — it's a real production credential.
+
 ### Required PHP extensions
 
 Laravel 13 core: `ctype`, `curl`, `dom`, `fileinfo`, `filter`, `hash`, `mbstring`, `openssl`, `pcre`, `pdo`, `session`, `tokenizer`, `xml`. This app additionally needs:
