@@ -10,6 +10,7 @@ return [
     ],
     'controls' => [
         'account' => 'Akaun',
+        'sign_up' => 'Daftar',
         'cart' => 'Troli (:count)',
         'change_theme' => 'Tukar tema',
         'change_language' => 'Tukar bahasa',

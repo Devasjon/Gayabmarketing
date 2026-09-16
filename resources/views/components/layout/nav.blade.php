@@ -19,5 +19,6 @@
         <livewire:cart-count />
     @else
         <a href="{{ route('login') }}" class="ghost">{{ __('layout.controls.account') }}</a>
+        <a href="{{ route('register') }}" class="ghost">{{ __('layout.controls.sign_up') }}</a>
     @endauth
 </div>

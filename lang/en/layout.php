@@ -10,6 +10,7 @@ return [
     ],
     'controls' => [
         'account' => 'Account',
+        'sign_up' => 'Sign up',
         'cart' => 'Cart (:count)',
         'change_theme' => 'Change theme',
         'change_language' => 'Change language',
